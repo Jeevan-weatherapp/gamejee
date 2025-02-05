@@ -2,6 +2,7 @@ body {
     text-align: center;
     font-family: Arial, sans-serif;
     background-color: #f0f8ff;
+    touch-action: manipulation; /* Prevent default touch gestures */
 }
 
 h1 {
@@ -15,29 +16,30 @@ p {
 
 #game-container {
     position: relative;
-    width: 400px;
+    width: 90%;
+    max-width: 400px;
     height: 500px;
-    background-color: #f5f913;
-    border-radius: 25px;
-    border: 7px solid #1f7b08;
-    margin: 25px auto;
+    background-color: #cce7ff;
+    border: 2px solid #000;
+    margin: 20px auto;
     overflow: hidden;
+    touch-action: none;
 }
 
 #basket {
     position: absolute;
-    bottom :10px;
-    left: 160px;
+    bottom: 10px;
+    left: 50%;
     width: 80px;
     height: 40px;
-    background-color: rgb(243, 27, 27);
+    background-color: brown;
     border-radius: 10px;
+    transform: translateX(-50%);
 }
 
 #falling-object {
     position: absolute;
     top: 0;
-    bottom: 0;
     left: 50%;
     width: 30px;
     height: 30px;

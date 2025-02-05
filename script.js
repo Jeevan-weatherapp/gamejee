@@ -4,12 +4,13 @@ const scoreDisplay = document.getElementById("score");
 const restartBtn = document.getElementById("restart-btn");
 
 let score = 0;
-let basketPosition = 160;
+let basketPosition = 50; // Now in percentage for better mobile support
 let objectPositionY = 0;
-let objectPositionX = Math.random() * 350;
+let objectPositionX = Math.random() * 90; // Use % for mobile
 let fallingSpeed = 3;
 let gameRunning = true;
 let isBlackBall = false;
+let touchStartX = 0;
 
 // Increase apple speed every 15 seconds
 setInterval(() => {
@@ -18,16 +19,37 @@ setInterval(() => {
     }
 }, 15000);
 
-// Move basket left & right
+// Move basket with keyboard (for desktop)
 document.addEventListener("keydown", (event) => {
     if (gameRunning) {
-        if (event.key === "ArrowLeft" && basketPosition > 0) {
-            basketPosition -= 20;
-        } else if (event.key === "ArrowRight" && basketPosition < 320) {
-            basketPosition += 20;
+        if (event.key === "ArrowLeft" && basketPosition > 5) {
+            basketPosition -= 5;
+        } else if (event.key === "ArrowRight" && basketPosition < 85) {
+            basketPosition += 5;
         }
-        basket.style.left = basketPosition + "px";
+        basket.style.left = basketPosition + "%";
     }
+});
+
+// Move basket with swipe (for mobile)
+document.addEventListener("touchstart", (event) => {
+    touchStartX = event.touches[0].clientX;
+});
+
+document.addEventListener("touchmove", (event) => {
+    if (!gameRunning) return;
+    
+    let touchEndX = event.touches[0].clientX;
+    let difference = touchEndX - touchStartX;
+
+    if (difference > 20 && basketPosition < 85) { 
+        basketPosition += 5; // Swipe right
+    } else if (difference < -20 && basketPosition > 5) { 
+        basketPosition -= 5; // Swipe left
+    }
+
+    basket.style.left = basketPosition + "%";
+    touchStartX = touchEndX;
 });
 
 function dropObject() {
@@ -35,10 +57,10 @@ function dropObject() {
 
     objectPositionY += fallingSpeed;
     fallingObject.style.top = objectPositionY + "px";
-    fallingObject.style.left = objectPositionX + "px";
+    fallingObject.style.left = objectPositionX + "%";
 
     // Check if object reaches the basket
-    if (objectPositionY >= 460 && objectPositionX > basketPosition - 10 && objectPositionX < basketPosition + 80) {
+    if (objectPositionY >= 460 && objectPositionX > basketPosition - 10 && objectPositionX < basketPosition + 10) {
         if (isBlackBall) {
             gameOver("Game Over! You caught a BLACK BALL ⚫!");
             return;
@@ -65,7 +87,7 @@ function dropObject() {
 
 function resetObject() {
     objectPositionY = 0;
-    objectPositionX = Math.random() * 350;
+    objectPositionX = Math.random() * 90; // Use % for mobile support
     
     // 20% chance of being a black ball
     isBlackBall = Math.random() < 0.2;
@@ -83,10 +105,10 @@ function gameOver(message) {
 function restartGame() {
     score = 0;
     scoreDisplay.textContent = score;
-    basketPosition = 160;
-    basket.style.left = basketPosition + "px";
+    basketPosition = 50;
+    basket.style.left = basketPosition + "%";
     objectPositionY = 0;
-    objectPositionX = Math.random() * 350;
+    objectPositionX = Math.random() * 90;
     fallingSpeed = 3;
     gameRunning = true;
     restartBtn.style.display = "none";
